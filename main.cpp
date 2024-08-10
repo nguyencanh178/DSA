@@ -81,18 +81,27 @@ void runline(){
 
 void vatcan1(){
     while(1){
-        followline();
+        followline(); // dò line ban đầu
         long distance = Leanbot.pingCm();
 
-        if (distance == 3){
-            LbMotion.runLR(1000, -1000);
-            LbMotion.waitRotationDeg(45);
+        if (distance == 3){ // khi thấy vật cản cách 3cm
+            LbMotion.runLR(1000, -1000); // rẽ phải 65 độ
+            LbMotion.waitRotationDeg(65);
+            LbMotion.stopAndWait(); // rẽ xong thì dừng lại 
+            LbMotion.runLR(1000, 1000); // xong đi thẳng 
+            LbDelay(3000); // đi trong 3s
+            LbMotion.runLR(-1000, 1000); // sau 3s thì rẽ trái 65 độ
+            LbMotion.waitRotationDeg(65);
+            LbMotion.stopAndWait(); // rẽ xong dừng lại
+            LbMotion.runLR(1000, 1000); // đi thẳng
+            LbDelay(3000); // đi trong 3s
+            LbMotion.runLR(-1000, 1000); // tương tự như trên
+            LbMotion.waitRotationDeg(65);
+            LbMotion.stopAndWait();
             LbMotion.runLR(1000, 1000);
-            LbDelay(4000);
-            LbMotion.runLR(-1000, 1000);
-            LbMotion.waitRotationDeg(45);
-            LbMotion.runLR(1000, 1000);
-            LbDelay(4000);
+            LbDelay(3000);
+            LbMotion.runLR(1000, -1000); // rẽ phải 65 độ vào line sang CO2
+            LbMotion.waitRotationDeg(65);
             break;
         }
     }
@@ -158,29 +167,29 @@ void cuu_hoa(){
 
 void nan_nhan(){
     while (){
-        int d = Leanbot.pingCm();
-
-        if (d >= 9){
-            followline();
-            LbMotion.waitDistanceMm(100);
-            LbMotion.stopAndWait();
-            LbGripper.close();
-            LbMotion.runLR(-1000, -1000);
-            LbMotion.waitDistanceMm(-100);
-            LbMotion.stopAndWait();
-            LbMotion.runLR(-1000, 1000);
-            LbMotion.waitRotationDeg(90);
+        int d = Leanbot.pingCm(); // khoảng cách cảm biến nhận số Cm
+// hướng leanbot đang hướng về bên room A
+        if (d >= 9){ // nếu khoảng cách lớn hơn hoặc = 9 thì 
+            followline(); // đi theo line
+            LbMotion.waitDistanceMm(100); // chờ khi đi đc 100 mm = 10cm
+            LbMotion.stopAndWait(); // dừng lại chờ lệnh
+            LbGripper.close(); // đóng tay servo gắp nạn nhân
+            LbMotion.runLR(-1000, -1000); // đi lùi
+            LbMotion.waitDistanceMm(-100); // chờ khi đi đc 10 cm
+            LbMotion.stopAndWait(); // dừng lại
+            LbMotion.runLR(-1000, 1000); // quay trái
+            LbMotion.waitRotationDeg(90); // một góc 90 độ
         }
-        else{
-            LbMotion.runLR(-1000, -1000);
-            LbMotion.waitRotationDeg(180);
-            followline();
-            LbMotion.waitDistanceMm(100);
-            LbGripper.close();
-            LbMotion.runLR(-1000, -1000);
-            LbMotion.waitDistanceMm(-100);
-            LbMotion.stopAndWait();
-            LbMotion.runLR(1000, -1000);
+        else{ // nếu k có thì quay sang room B
+            LbMotion.runLR(1000, -1000); // quay phải
+            LbMotion.waitRotationDeg(180); // góc 180 độ
+            followline(); // đi theo line
+            LbMotion.waitDistanceMm(100); // khi đi đc 10 cm
+            LbGripper.close();// thì gắp nạn nhân bên room B
+            LbMotion.runLR(-1000, -1000); // đi lùi
+            LbMotion.waitDistanceMm(-100); // chờ khi lùi đc 10 cm
+            LbMotion.stopAndWait(); // dừng lại
+            LbMotion.runLR(1000, -1000); // quay phải 90 độ
             LbMotion.waitRotationDeg(90);
         }
         break;
@@ -189,18 +198,19 @@ void nan_nhan(){
 
 void ong_tuot(){
     while(1){
-        LbMotion.runLR(-1000, -1000);
-        while(LbMotion.waitDistanceMm(515)){
-            LbMotion.runLR(-1000, 1000);
+        LbMotion.runLR(-1000, -1000); // khi quay đc 90 xong thì đi lùi
+        while(LbMotion.waitDistanceMm(-515)){ // khi nào đi lùi đc 51,5 cm
+            LbMotion.runLR(-1000, 1000); // quay 180 độ
             LbMotion.waitRotationDeg(180);
-            LbGripper.open();
+            LbGripper.open(); // thả nạn nhân xuống ống
+            break;
         }
-        LbMotion.runLR(-1000, 1000);
+        LbMotion.runLR(-1000, 1000); // quay đầu leanbot
         LbMotion.waitRotationDeg(180);
         LbMotion.stopAndWait();
         followline();
-        LbMotion.waitDistanceMm(279);
-        LbMotion.runLR(1000, -1000);
+        LbMotion.waitDistanceMm(279); // chờ khi đi đc 27,9 cm thì rẽ phải 90 độ 
+        LbMotion.runLR(1000, -1000); // để xuống thang
         LbMotion.waitDistanceMm(90);
         break;
     }
