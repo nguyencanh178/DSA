@@ -25,9 +25,8 @@ void loop(){
     co2();
     len_thang();
     cuu_hoa();
-    ong_tuot();
-    roomA();
     nan_nhan();
+    ong_tuot();
     xuong_thang();
     follow_wall();
 
@@ -60,20 +59,20 @@ void runline(){
       LbMotion.runLR(0, +1000);         //        turn left
       break;
 
-    case 0b1100:                         // oo..
-    case 0b1000:                         // o...
-      LbMotion.runLR(-1000, +1000);    //        spin left
-      break;
+    // case 0b1100:                         // oo..
+    // case 0b1000:                         // o...
+    //   LbMotion.runLR(-1000, +1000);    //        spin left
+    //   break;
 
     case 0b0010:                         // ..o. - if the black line off to the right
     case 0b0111:                         // .ooo
       LbMotion.runLR(+1000, 0);         //        turn right
       break;
 
-    case 0b0011:                         // ..oo
-    case 0b0001:                         // ...o
-      LbMotion.runLR(+1000, -1000);    //        spin right
-      break;
+    // case 0b0011:                         // ..oo
+    // case 0b0001:                         // ...o
+    //   LbMotion.runLR(+1000, -1000);    //        spin right
+    //   break;
 
     default:                             // all other cases
       LbMotion.runLR(+1000, +1000);    //        go straight
@@ -123,22 +122,66 @@ void len_thang(){
         while(LbMotion.waitDistanceMm(200)){
             LbMotion.runLR(-1000, 1000);
             LbMotion.waitRotationDeg(90);
+            break;
         }
         break;
     }
 }
 
+/*
+    đặt bình xong quay ra check 2 room nếu room nào có thì đi lùi đẩy ống 
+    và quay 180* r thả nạn nhân
+*/
+
 void cuu_hoa(){
     while(1){
         followline();
-        while (LbMotion.waitDistanceMm(287)){
+        while (LbMotion.waitDistanceMm(870)){
             LbMotion.runLR(-1000, 1000);
             LbMotion.waitRotationDeg(90);
+            break;
         }
         while(LbMotion.waitDistanceMm(235)){
             LbGripper.open();
+            LbMotion.runLR(-1000, -1000);
+            LbMotion.waitDistanceMm(100);
+            LbMotion.stopAndWait();
             LbMotion.runLR(-1000, 1000);
+            LbMotion.waitDistanceDeg(90);
+            break;
+            // LbMotion.runLR(-1000, -1000);
+            // LbMotion.waitRotationDeg(180);
+        }
+        break;
+    }
+}
+
+void nan_nhan(){
+    while (){
+        int d = Leanbot.pingCm();
+
+        if (d >= 9){
+            followline();
+            LbMotion.waitDistanceMm(100);
+            LbMotion.stopAndWait();
+            LbGripper.close();
+            LbMotion.runLR(-1000, -1000);
+            LbMotion.waitDistanceMm(-100);
+            LbMotion.stopAndWait();
+            LbMotion.runLR(-1000, 1000);
+            LbMotion.waitRotationDeg(90);
+        }
+        else{
+            LbMotion.runLR(-1000, -1000);
             LbMotion.waitRotationDeg(180);
+            followline();
+            LbMotion.waitDistanceMm(100);
+            LbGripper.close();
+            LbMotion.runLR(-1000, -1000);
+            LbMotion.waitDistanceMm(-100);
+            LbMotion.stopAndWait();
+            LbMotion.runLR(1000, -1000);
+            LbMotion.waitRotationDeg(90);
         }
         break;
     }
@@ -146,66 +189,40 @@ void cuu_hoa(){
 
 void ong_tuot(){
     while(1){
-        followline();
+        LbMotion.runLR(-1000, -1000);
         while(LbMotion.waitDistanceMm(515)){
-            LbGripper.close();
+            LbMotion.runLR(-1000, 1000);
+            LbMotion.waitRotationDeg(180);
+            LbGripper.open();
         }
         LbMotion.runLR(-1000, 1000);
         LbMotion.waitRotationDeg(180);
+        LbMotion.stopAndWait();
+        followline();
+        LbMotion.waitDistanceMm(279);
+        LbMotion.runLR(1000, -1000);
+        LbMotion.waitDistanceMm(90);
         break;
     }
 }
 
-void roomA(){
-    while(1){
-        followline();
-        while(LbMotion.waitDistanceMm(416)){
-            LbMotion.runLR(-1000, 1000);
-            LbMotion.waitRotationDeg(90);
-        }
-        LbGripper.open();
-        delay(1000);
-        LbGripper.close();
-        break;
-    }
-}
-
-void nan_nhan(){
-    while(1){
-        followline();
-        while(LbMotion.waitDistanceMm(100)){
-            LbMotion.runLR(-1000, 1000);
-            LbMotion.waitRotationDeg(90);
-        }
-        long distance = LbMotion.getDistanceMm();
-
-        if (distance == 416){
-            LbGripper.open();
-            delay(1000);
-            LbGripper.close();
-            delay(1000);
-            LbMotion.runLR(-1000, 1000);
-            LbMotion.waitRotationDeg(180);
-            break;
-        }
-    }
-}
 
 void xuong_thang(){
     while(1){
         followline()
 
-        while (LbMotion.waitDistanceMm(279)){
-            LbMotion.runLR(1000, -1000);
-            LbMotion.waitRotationDeg(90);
-        }
-
-        long distance = LbMotion.getDistanceMm();
-        if (distance == 660){
+        while (LbMotion.waitDistanceMm(870)){
             LbMotion.runLR(1000, -1000);
             LbMotion.waitRotationDeg(90);
             break;
         }
+        followline();
+        while(LbMotion.waitDistance(168)){
+            LbMotion.runLR(-1000, 1000);
+            LbMotion.waitDistanceMm(90);
+            break;
+        }
+        break;
     }
 }
 
